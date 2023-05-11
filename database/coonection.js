@@ -1,13 +1,25 @@
-import mongoose from 'mongoose';
-
-const connectMongo = async () => {
-  try {
-    await mongoose.connect(process.env.MONGO_url);
-    console.log('Connected to MongoDB!');
-  } catch (error) {
-    console.error('Error connecting to MongoDB:', error);
-    throw error;
-  }
+import sql from 'mssql';
+require('ssl-root-cas').inject();
+const config = {
+  user: 'Admin',
+  password: 'Welcome1',
+  server: 'localhost',
+  database: 'marketplace',
+ 
+  options: {
+    encrypt: false, // Use this if you're on Windows (default is false)
+    TrustServerCertificate: true
+    }
 };
 
-export default connectMongo;
+const connectsql = async () => {
+  try {
+    await sql.connect(config);
+    console.log('Connected to mssql!');
+  } catch (error) {
+    console.error('Error connecting to sql:', error);
+    throw error;
+  } 
+};
+
+export default connectsql;

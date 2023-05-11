@@ -1,8 +1,8 @@
 import NextAuth from 'next-auth'
 import Users from '../../../model/schema'
 import {compare} from 'bcryptjs'
-import connectMongo from '../../../database/coonection'
-import CredentailsProvider from 'next-auth/providers/credentials'
+import connectsql from '../../../database/coonection'
+import CredentialsProvider from 'next-auth/providers/credentials'
 import GithubProvider from'next-auth/providers/github'
 import GoogleProvider from 'next-auth/providers/google'
 
@@ -24,15 +24,15 @@ export default NextAuth({
             clientSecret:process.env.GITHUB_secret
         }),
         // custom credentails
-        CredentailsProvider({
+        CredentialsProvider({
             name:"Credentials",
             async authorize(credentails,req){
-                connectMongo().catch(error => {error:"Connection Failed...!"})
+                connectsql().catch(error => {error:"Connection Failed...!"})
         // check user exitence 
-        const result = await Users.findOne({email :credentails.email})
-        if(!result){
-            throw new Error("No user found")
-        }
+        // const result = await Users.findOne({email :credentails.email})
+        // if(!result){
+        //     throw new Error("No user found")
+        // }
 
         //  compare 
         const checkPassword = await compare(credentails.password,result.password);
@@ -44,7 +44,20 @@ export default NextAuth({
         
         return result;
     }
-        })
+        }),
+    
+
     ],
-    secret:"hcxi07sbXGcdcCTnqd6z3qCkjm15U0yBZDI7uXZYXHM="
-})
+
+
+
+    database_url:process.env.database_url,
+    session:{
+        jwt:true
+    },
+    jwt:{
+        secret:"hcxi07sbXGcdcCTnqd6z3qCkjm15U0yBZDI7uXZYXHM="
+    },
+
+  
+});
